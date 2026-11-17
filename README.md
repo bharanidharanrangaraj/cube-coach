@@ -27,12 +27,12 @@ private, because the certificate was made on this computer. **Chrome:** Advanced
 visit this website. If the phone can't connect, allow Python through Windows Firewall on
 Private networks.
 
-**On your phone, forever offline (recommended):** browsers only keep an app offline when it was
-opened once from a real `https://` address. Put this folder on any free static host once, for
-example GitHub Pages: create a repository, upload the contents of this folder, then Settings →
-Pages → Deploy from branch. Open the address on your phone and choose **Install app** / **Add to
-Home screen**. From then on it opens from the home screen and works in airplane mode. The camera
-picture never leaves the phone either way.
+**On your phone, forever offline (recommended):** open
+**https://bharanidharanrangaraj.github.io/cube-coach/** once, then choose **Install app** (Chrome)
+or **Share → Add to Home Screen** (Safari). From then on it opens from the home screen and works in
+airplane mode. The camera picture never leaves the phone. The site is GitHub Pages, served from the
+`main` branch of this repository, so pushing to `main` updates it. An installed copy picks up
+updates the next time it's opened with internet.
 
 ## Use it
 

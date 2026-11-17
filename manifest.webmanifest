@@ -1,0 +1,17 @@
+{
+  "name": "Cube Coach - 4x4 solver & trainer",
+  "short_name": "Cube Coach",
+  "description": "Scan your 4x4 cube with the camera, get step-by-step help from any stage, and learn to solve it yourself.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#111318",
+  "theme_color": "#14161b",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cube Coach</title>
+<meta name="description" content="Scan your 4x4 cube with the camera, get step-by-step help from any stage, and learn to solve it yourself. Runs on your device, works offline.">
+<meta name="theme-color" content="#14161b">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<header class="top">
+  <button id="back" class="iconbtn" aria-label="Back" hidden>‹</button>
+  <h1 id="title">Cube Coach</h1>
+  <span class="spacer"></span>
+</header>
+
+<main>
+  <!-- HOME -->
+  <section id="home">
+    <div class="hero">
+      <canvas id="home-cube" aria-hidden="true"></canvas>
+      <div>
+        <h2>Solve your 4x4.<br>Then learn to do it yourself.</h2>
+        <p class="muted">Show the cube to the camera. Cube Coach finds which stage you're at and guides you from there, one step at a time.</p>
+      </div>
+    </div>
+    <div class="homebtns">
+      <button class="btn big primary" data-go="scan">Scan my cube</button>
+      <button class="btn big" data-go="solve" id="resume" hidden>Continue solving</button>
+      <div class="grid3">
+        <button class="btn tile" data-go="learn"><span>📖</span>Learn</button>
+        <button class="btn tile" data-go="practice"><span>🎯</span>Practice</button>
+        <button class="btn tile" data-go="sheet"><span>📋</span>Cheat sheet</button>
+      </div>
+      <button class="btn" id="install-btn" hidden>Install as an app</button>
+    </div>
+    <p class="small muted center">Runs on this device. Works offline. <a href="#about">Install &amp; privacy</a></p>
+  </section>
+
+  <!-- SCAN -->
+  <section id="scan" hidden>
+    <div class="camhost" id="scan-cam"></div>
+    <div class="panel">
+      <div class="scanhead">
+        <canvas id="scan-mini" aria-hidden="true"></canvas>
+        <div>
+          <p class="kicker" id="scan-step">Face 1 of 6</p>
+          <p id="scan-instr"></p>
+          <div class="dots" id="scan-dots"></div>
+        </div>
+      </div>
+      <p class="live" id="scan-live"></p>
+      <div class="row">
+        <button class="btn" id="scan-capture">Capture now</button>
+        <button class="btn" id="scan-undo">Redo last</button>
+        <button class="btn" id="scan-switch">Switch camera</button>
+        <button class="btn" id="scan-light" hidden>Light</button>
+      </div>
+      <p class="small muted">Tips: even light, no glare, cube fills the grid. No camera? <a href="#" id="scan-manual">Enter colours by hand</a>.</p>
+    </div>
+  </section>
+
+  <!-- REVIEW -->
+  <section id="review" hidden>
+    <p id="rev-msg" class="msg"></p>
+    <div class="net" id="rev-net"></div>
+    <p class="small muted">To fix a sticker: pick a colour, then tap the sticker.</p>
+    <div class="palette" id="rev-pal"></div>
+    <div class="row">
+      <button class="btn primary big" id="rev-solve">Solve from here</button>
+      <button class="btn" data-go="scan">Rescan</button>
+    </div>
+  </section>
+
+  <!-- SOLVE -->
+  <section id="solve" hidden>
+    <div class="stages" id="sv-stages"></div>
+    <div class="svmain">
+      <div class="svview" id="sv-view">
+        <div class="camhost" id="sv-camhost"></div>
+        <canvas id="sv-cube" aria-label="3D cube"></canvas>
+        <div class="viewbtns">
+          <button class="btn sm" id="sv-cam" title="Camera with arrows">📷 Camera</button>
+          <button class="btn sm" id="sv-flip" hidden>Switch</button>
+          <button class="btn sm" id="sv-resetview" title="Reset view">⟲</button>
+        </div>
+      </div>
+      <div class="svcard" id="sv-card">
+        <div class="svhead">
+          <span class="kicker" id="sv-count"></span>
+          <label class="toggle"><input type="checkbox" id="sv-teach"> Teach me</label>
+          <button class="btn sm" id="sv-list">All steps</button>
+        </div>
+        <h2 id="sv-title"></h2>
+        <p class="goal" id="sv-goal"></p>
+        <p class="hint" id="sv-hint" hidden></p>
+        <div class="row" id="sv-ladder">
+          <button class="btn" id="sv-hintbtn">💡 Hint</button>
+          <button class="btn" id="sv-movesbtn">Show moves</button>
+        </div>
+        <div class="moves" id="sv-moves" hidden></div>
+        <div class="player" id="sv-player" hidden>
+          <button class="btn" id="sv-prev" aria-label="Previous move">◀</button>
+          <button class="btn primary grow" id="sv-next">Next ▶</button>
+          <button class="btn" id="sv-play">Play</button>
+        </div>
+        <div class="row">
+          <button class="btn" id="sv-check">✓ Check with camera</button>
+          <button class="btn" id="sv-nextstep">Next step</button>
+        </div>
+        <p id="sv-result" class="msg"></p>
+        <p class="small muted keyshelp">Keys: → next move, ← back, Enter next step, C check. <a href="#" id="sv-rescan">Rescan</a></p>
+      </div>
+      <div class="svcard" id="sv-done" hidden>
+        <h2>Solved! 🎉</h2>
+        <p id="sv-donetext"></p>
+        <p>Want to do it without the app next time? The lessons and drills teach exactly the steps you just did.</p>
+        <div class="row"><a class="btn primary" href="#learn">Learn the steps</a><a class="btn" href="#scan">Scan again</a></div>
+      </div>
+    </div>
+    <div class="modal" id="sv-modal" hidden>
+      <div class="sheet">
+        <div class="svhead"><b>All steps</b><button class="btn sm" id="sv-modalclose">Close</button></div>
+        <div id="sv-listbox" class="list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEARN -->
+  <section id="learn" hidden>
+    <p class="muted">The same beginner method the app uses. Each lesson has short demos and a drill.</p>
+    <div class="cards" id="learn-list"></div>
+  </section>
+  <section id="lesson" hidden><div id="lesson-body"></div></section>
+
+  <!-- PRACTICE -->
+  <section id="practice" hidden>
+    <p class="muted">Solve each case on the 3D cube by tapping moves. Stars fill up when you do it without the answer.</p>
+    <div class="cards" id="practice-list"></div>
+  </section>
+  <section id="drill" hidden>
+    <p id="dr-prompt" class="goal"></p>
+    <canvas id="dr-cube"></canvas>
+    <div id="dr-quiz" class="row" hidden></div>
+    <div id="dr-typed" class="typed"></div>
+    <div id="dr-keys" class="keys"></div>
+    <div class="row" id="dr-tools">
+      <button class="btn" id="dr-undo">Undo</button>
+      <button class="btn" id="dr-reset">Reset</button>
+      <button class="btn" id="dr-answer">Show answer</button>
+    </div>
+    <p id="dr-status" class="msg"></p>
+  </section>
+
+  <!-- CHEAT SHEET -->
+  <section id="sheet" hidden>
+    <div class="row noprint"><button class="btn" id="sheet-print">Print</button></div>
+    <div id="sheet-body"></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" hidden>
+    <h2>Private by design</h2>
+    <p>The camera picture is read right here on this device, a few times a second, and thrown away. Nothing is uploaded: there is no server. Your progress is kept in this browser only.</p>
+    <h2>Use it with no internet</h2>
+    <p>Open Cube Coach once from a web address that starts with <b>https://</b>, then use your browser's <b>Install app</b> or <b>Add to Home screen</b>. After that it opens from your home screen and works in airplane mode.</p>
+    <p>On a computer you can also just double-click <b>index.html</b>.</p>
+    <h2>Tips for good scans</h2>
+    <ul>
+      <li>Even light from above or behind you. Avoid a lamp shining on the stickers (glare).</li>
+      <li>Fill the grid with one face. Keep the cube still until the grid turns green.</li>
+      <li>Front camera (laptop or selfie): the picture is mirrored, like a mirror. That's fine.</li>
+    </ul>
+  </section>
+</main>
+
+<div id="cambox" class="cambox" hidden>
+  <video playsinline muted autoplay></video>
+  <canvas class="ov"></canvas>
+  <div id="cam-msg" class="cammsg" hidden></div>
+</div>
+<div id="toast" class="toast" hidden></div>
+
+<script src="js/cube.js"></script>
+<script src="js/solver.js"></script>
+<script src="js/vision.js"></script>
+<script src="js/camera.js"></script>
+<script src="js/render3d.js"></script>
+<script src="js/content.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

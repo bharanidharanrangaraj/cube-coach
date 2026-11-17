@@ -1,0 +1,4 @@
+.cert/
+.claude/
+__pycache__/
+*.pyc
